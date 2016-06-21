@@ -1,7 +1,5 @@
 <!doctype html>
 
-{% load static %}
-
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -15,14 +13,33 @@
 <body>
 	<div class="container">
 		<div class="navbar">
-			The navbar
+			<a href="#" class="main">Home</a></li>
+			<a href="#">New Game</a></li>
+			<a href="#">Settings</a></li>
+			<a href="#">About</a></li>
 		</div>
 		<div class="players">
-		<div class="player">
-			<img src="gfx/Anime_Girl.png" alt="player1">
-			<img src="gfx/animegirlatbeach.png" alt="player2">
-			<img src="gfx/Freeworld.png" alt="player3">
-			<img src="gfx/mahuri.png" alt="player4">
+			<div class="player">
+				<!-- An image, a canvas for rolling dice -->
+				<img src="gfx/Anime_Girl.png" alt="player1">
+				<canvas id="canvas1"></canvas>
+			</div>
+			<div class="player">
+				<img src="gfx/animegirlatbeach.png" alt="player2">
+				<canvas id="canvas2"></canvas>
+			</div>
+			<div class="player">
+				<img src="gfx/Freeworld.png" alt="player3">
+				<canvas id="canvas3"></canvas>
+			</div>
+			<div class="player">
+				<img src="gfx/mahuri.png" alt="player4">
+				<canvas id="canvas4"></canvas>
+			</div>
+			<div class="player">
+				<img src="gfx/Dojikko.png" alt="player5">
+				<canvas id="canvas5"></canvas>
+			</div>
 		</div>
 		<div class="updates">
 			The updates
