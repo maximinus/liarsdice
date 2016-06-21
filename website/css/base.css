@@ -1,0 +1,111 @@
+/* Basic CSS rules, using Flexbox */
+
+body {
+	margin: 0;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	width: 980px;
+	margin: 0px auto 0px auto;
+	padding; 0px 5px 0px 5px;
+	font-family: 'Alegreya Sans', sans-serif;
+	font-weight: 400;
+}
+
+.container:a {
+	margin: 4px;
+	font-size: 1 em;
+}
+
+h3 {
+	margin: 12px;
+	font-size: 2em;
+}
+
+p {
+	margin: 4px;
+	font-size: 1em;
+}
+
+.navbar {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	background-color: #DDF;
+}
+
+.navbar a {
+	color: #666;
+	padding: 8px;
+	font-size: 1.0em;
+	text-decoration: none;
+	border-bottom: 1px solid #DDF;
+}
+
+.navbar .main {
+	font-weight: bold;
+}
+
+.navbar a:hover {
+	color: #222;
+	border-bottom: 1px solid #779;
+}
+
+#pull-right {
+	margin-left: auto;
+}
+
+.dropdown {
+	color: #666;
+	margin: 8px;
+	font-size: 1.0em;
+}
+
+.dropdown-content {
+	background-color: #DDF;
+	display: none;
+	position: absolute;
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: flex;
+    flex-direction: column;
+}
+
+#vertical-center {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	margin-top: 100px;
+	margin-bottom: auto;
+	margin-left: auto;
+	margin-right: auto;
+	align-items: center;
+	width: 60%;
+	color: #222;
+}
+
+#search-box {
+	width: 80%;
+}
+
+#search-text {
+	font-style: italic;
+}
+
+#results {
+	display: none;
+	color: #444;
+}
+
+#results-message {
+}
+
+#results-list {
+	colour: #444;
+}
+
