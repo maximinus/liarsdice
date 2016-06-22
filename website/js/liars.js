@@ -1,44 +1,29 @@
 "user strict";
 
-IMAGES = {'one-dot':'1_dot.png',
-		  'two-dot':'2_dots.png',
-		  'three-dot':'3_dots.png',
-		  'four-dot':'4_dots.png',
-		  'five-dot':'5_dots.png',
-		  'six-dot':'6_dots.png'};
+CONSTS = {'dice_gap':30};
 
-function getLength(dictionary) {
-	var count = 0;
-	for(var i in dictionary) {
-		if(dictionary.hasOwnProperty(i)) {
-			count++; }
-	}
-	return(count);
-};
+IMAGES = ['1_dot.png', '2_dots.png', '3_dots.png',
+		  '4_dots.png', '5_dots.png', '6_dots.png'];
 
 
 function ImageLoader(callback) {
 	this.imageLoaded = function() {
 		this.total_loaded += 1;
-		if(this.total_loaded == this.images_to_load) {
-			// run the callback
+		if(this.total_loaded == IMAGES.length) {
 			this.onImagesLoaded(this.images);
 		}
 	};
 
-	this.images = {};
+	this.images = [];
 	this.total_loaded = 0;
 	this.onImagesLoaded = callback;
 	// get number of images
-	this.images_to_load = getLength(IMAGES);
 
 	// load all the images and then call callback
-	for(var name in IMAGES) {
-		if(IMAGES.hasOwnProperty(name)) {
-			this.images[name] = new Image();
-			this.images[name].onload = this.imageLoaded.bind(this);
-			this.images[name].src = 'gfx/' + IMAGES[name];
-		}
+	for(var i of IMAGES) {
+		this.images.push(new Image());
+		this.images[this.images.length - 1].onload = this.imageLoaded.bind(this);
+		this.images[this.images.length - 1].src = 'gfx/' + i;
 	}
 };
 
@@ -61,13 +46,30 @@ function DiceDisplay(canvas) {
 
 function GameEngine(images) {
 	this.images = images;
-	console.log('Started up the engine!');
-	console.log(images);
-}
+	this.dice_canvas = [];
+	this.dice_images = [];
+	this.players = [];
+
+	this.init = function() {
+		// get the player canvases and a 2d context
+		for(var i of [1,2,3,4,5]) {
+			var canvas_id = 'p' + i.toString() + '-canvas';
+			var canvas = document.getElementByID(canvas_id);
+			this.dice_canvas.push(canvas.getContext('2d'));
+			this.players.push(new Player());
+		}
+
+	}
+};
 
 function imagesLoaded(images) {
 	// pass this to the engine and start it
+
+	console.log(images);
+	return;
+
 	engine = new GameEngine(images);
+	engine.init();
 }
 
 var engine = null;
