@@ -1,6 +1,6 @@
 "use strict";
 
-var CONSTS = {'dice_gap':0.3,
+var CONSTS = {'dice_gap':0.2,
 			  'dice_background':'#CCCCCC'};
 
 var IMAGES = ['1_dot.png', '2_dots.png', '3_dots.png',
@@ -58,6 +58,8 @@ function DrawDice(dice_images) {
 		var height = (3.0 * this.gap) + (2.0 * this.dice_size);
 		for(var i of ctx) {
 			i.canvas.height = height; }
+
+		console.log(width, height);
 	};
 
 	this.drawOne = function(ctx, dice) {
