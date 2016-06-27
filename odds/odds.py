@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import math
+import math, json
 
 def getTotalCombinations(n, k):
 	# n: total elements, k: elements to combine
@@ -12,7 +12,7 @@ def getTotalCombinations(n, k):
 	return n_fact / denominator
 
 # program to calculate odds of getting dice rolls
-def buildOdds(dice_total, total_hits):
+def buildOddsForTwo(dice_total, total_hits):
 	# the odds of one dice being one of the values - 1 or x - is 0.333
 	# if we want to find the probability of a dice out of b dice being of our value, 
 	# we multiply the odds.
@@ -33,14 +33,32 @@ def buildOdds(dice_total, total_hits):
 	# finally, turn that into a float
 	return float(odds_of_miss_numerator * combos) / (odds_of_miss_denominator * odds_of_hits_denomintor)
 
+def buildOddsForOne(dice_total, total_hits):
+	# really almost the same as the above similarly named routine
+	odds_of_hits_denomintor = 6**total_hits
+	total_miss = dice_total - total_hits
+	odds_of_miss_numerator = 5**total_miss
+	odds_of_miss_denomintor = 6**total_miss
+	combos = getTotalCombinations(dice_total, total_hits)
+	return float(odds_of_miss_numerator * combos) / (odds_of_miss_denomintor * odds_of_hits_denomintor)
+
+def exportAsJavascript(ones, twos, max_dice):
+	# we need to make this into a javascript file called odds.js
+	datafile = open('odds.js', 'w')
+	datafile.write('"use strict";\n\n')
+	datafile.write('\\\\ Odds of throwing this number of dice\n\n')
+	datafile.write("var ODDS = {'MAX_DICE': {0},\n".format(max_dice))
+	datafile.write(""            'ones':)
+	for i in ones
+	
+
 if __name__ == '__main__':
 	# Assuming 15 dice, we need to find the chances of getting 1..2 etc of the those dice
-	TOTAL_DICE = 15
-	print 'For {0} dice:'.format(TOTAL_DICE)
-
-	odds = [buildOdds(TOTAL_DICE, x) for x in range(TOTAL_DICE + 1)]
-
-	for i in range(TOTAL_DICE + 1):
-		total_chance = sum(odds[:i+1]) * 100
-		print '\t{0} hits: {1}%'.format(i, odds[i] * 100)
-		print '\t\ttotal: {0}'.format(total_chance)
+	MAX_DICE = 20
+	# we need to build a table for MAX_DICE down to one
+	ones = []
+	twos = []
+	for i in range(MAX_DICE):
+		ones.append([buildOddsForOne(MAX_DICE, x) for x in range(MAX_DICE + 1)])
+		twos.append([buildOddsForTwo(MAX_DICE, x) for x in range(MAX_DICE + 1)])
+	exportAsJSON(ones, twos, MAX_DICE)
