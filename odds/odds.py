@@ -46,11 +46,22 @@ def exportAsJavascript(ones, twos, max_dice):
 	# we need to make this into a javascript file called odds.js
 	datafile = open('odds.js', 'w')
 	datafile.write('"use strict";\n\n')
-	datafile.write('\\\\ Odds of throwing this number of dice\n\n')
-	datafile.write("var ODDS = {'MAX_DICE': {0},\n".format(max_dice))
-	datafile.write(""            'ones':)
-	for i in ones
-	
+	datafile.write('// Odds of throwing this number of dice\n\n')
+	datafile.write("var ODDS = {{'MAX_DICE': {0},\n".format(max_dice))
+	datafile.write("            'ones':[")
+	for i in ones:
+		# it's a list, do convert the list to json
+		array_data = json.dumps(i)
+		datafile.write('{0},\n                    '.format(array_data))
+	datafile.write('],\n')
+	datafile.write("            'twos':[")
+	for i in twos:
+		# it's a list, do convert the list to json
+		array_data = json.dumps(i)
+		datafile.write('{0},\n                    '.format(array_data))
+	datafile.write('],\n')
+	datafile.write('            };\n')
+	datafile.close()
 
 if __name__ == '__main__':
 	# Assuming 15 dice, we need to find the chances of getting 1..2 etc of the those dice
@@ -59,6 +70,7 @@ if __name__ == '__main__':
 	ones = []
 	twos = []
 	for i in range(MAX_DICE):
-		ones.append([buildOddsForOne(MAX_DICE, x) for x in range(MAX_DICE + 1)])
-		twos.append([buildOddsForTwo(MAX_DICE, x) for x in range(MAX_DICE + 1)])
-	exportAsJSON(ones, twos, MAX_DICE)
+		ones.append([buildOddsForOne(i + 1, x) for x in range(i + 2)])
+		twos.append([buildOddsForTwo(i + 1, x) for x in range(i + 2)])
+	exportAsJavascript(ones, twos, MAX_DICE)
+	print '  Exported as odds.js in current directory.'
