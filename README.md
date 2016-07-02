@@ -5,7 +5,7 @@ The game of Liars Dice for HTML5 browsers with AI for single play.
 
 Game is currently non-playable due to being a very new repository.
 
-To run, download the files, and then open the "game.html". That's it!
+To run, download the files, and then open the "liars.html". That's it!
 
 If you have any problems, please enter it as an issue.
 
