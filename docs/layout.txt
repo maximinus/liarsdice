@@ -1,0 +1,43 @@
+
+Graphical layout values
+
+The screen is 1280 x 960 scaled up or down.
+
+At the top of the screen is navbar.
+
+Underneath that are the players. For 4 players, the layout is as follows:
+
+The 1280 is split into 4 groups. However, we leave a 8 pixel gaps between the players.
+That leaves:
+
+	(1280 - (8 * 3)) / 4 = 314 pixels per player.
+
+For the showing of 3 dice in a row, we have the following, from left to right:
+
+	Border:		5 px
+	1st gap:	13 px
+	Dice:		84 px
+	2nd gap:	13 px
+	Dice:		84 px
+	3rd gap:	13 px
+	Dice:		84 px
+	4th gap:	13 px
+	Border:		5 px
+
+For 2 dice in a row:
+
+	Border:		5 px
+	1st gap:	61 px
+	Dice: 		84 px
+	2nd gap:	14 px
+	Dice:		84 px
+	3rd gap:	61 px
+	Border:		5 px
+
+For 1 single dice:
+
+	Border:		5 px
+	1st gap:	110 px
+	Dice:		84 px
+	2nd gap:	110 px
+	Border:		5 px
