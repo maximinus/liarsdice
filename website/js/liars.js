@@ -5,7 +5,7 @@ var consts = {
 	'HEIGHT': 960,
 	// smallest size
 	'GAME_SIZE': 640,
-	'BACKGROUNDCOLOR': '#000000',
+	'BACKGROUNDCOLOR': '#ffffff',
 	'STARTING_PLAYERS': 4,
 };
 
@@ -48,8 +48,8 @@ function getDiceName(index) {
 };
 
 function PlayerDisplay(location, color) {
-	var WIDTH = 320;
-	var HEIGHT = 320;
+	var WIDTH = 314;
+	var HEIGHT = 314;
 
 	this.createInitialSprite = function() {
 		// create the border etc..
@@ -67,27 +67,51 @@ function PlayerDisplay(location, color) {
 		this.dice = [];
 	};
 
-	this.draw = function(player) {
-		console.log(player);
+	this.drawOne = function(value) {
+		// draw this single dice
+		var xpos =  this.global_xpos + 5 + 110;
+		var sprite = game.add.sprite(xpos, 128, getDiceName(value));
+		sprite.width = 84;
+		sprite.height = 84;
+		this.dice.push(sprite);
+	};
 
+	this.drawTwo = function(dice1, dice2) {
+		var xpos = this.global_xpos + 5 + 61;
+		var sprite1 = game.add.sprite(xpos, 128, getDiceName(value));
+		sprite1.width = 84;
+		sprite1.height = 84;
+		xpos += 84 + 14;
+		var sprite2 = game.add.sprite(xpos, 128, getDiceName(value));
+		sprite2.width = 84;
+		sprite2.height = 84;
+		this.dice.push(sprite1);
+		this.dice.push(sprite2);
+	};
+
+	this.draw = function(player) {
 		if(this.sprite == null) {
 			this.createInitialSprite();
 		}
 		// redraw dice
 		this.destroyDiceSprites();
 		var xpos = 0;
-		for(var i of player.dice) {
-			game.add.sprite(xpos, 0, getDiceName(i));
-			xpos += 128;
-		}
-		this.background.x = 0;
+
+		this.drawOne(player.dice[0]);
+
+		//for(var i of player.dice) {
+		//	game.add.sprite(xpos, 0, getDiceName(i));
+		//	xpos += 128;
+		//}
+
+		this.background.x = this.global_xpos;
 		this.background.y = 0;
 	};
 
+	this.global_xpos = location * 320;
 	this.color = color;
 	this.background = null;
 	this.dice = [];
-	this.location = location;
 };
 
 function LiarModel(total_players) {
@@ -144,11 +168,18 @@ function Game() {
 	};
 
 	this.drawPlayers = function() {
-		this.player_display.draw(this.model.players[0]);
+		// match model to display
+		for(var i = 0; i < this.model.players.length; i++) {
+			this.player_display[i].draw(this.model.players[i]);
+		}
 	};
 
 	this.model = new LiarModel(consts.STARTING_PLAYERS);
-	this.player_display = new PlayerDisplay(0, '#ff0000');
+	this.player_display = [];
+	var colors = ['#ff0000', '#00ff00', '#0000ff', '#aaaa00'];
+	for(var i = 0; i < colors.length; i++) {
+		this.player_display.push(new PlayerDisplay(i, colors[i]));
+	}
 };
 
 var game = new Phaser.Game(consts.WIDTH, consts.HEIGHT, Phaser.CANVAS, "Liar;s Dice");
