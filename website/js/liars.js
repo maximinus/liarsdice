@@ -67,26 +67,32 @@ function PlayerDisplay(location, color) {
 		this.dice = [];
 	};
 
-	this.drawOne = function(value) {
-		// draw this single dice
-		var xpos =  this.global_xpos + 5 + 110;
-		var sprite = game.add.sprite(xpos, 128, getDiceName(value));
+	this.drawSingleDice = function(xpos, ypos, value) {
+		var sprite = game.add.sprite(xpos, ypos, getDiceName(value));
 		sprite.width = 84;
 		sprite.height = 84;
-		this.dice.push(sprite);
+		this.dice.push(sprite);		
 	};
 
-	this.drawTwo = function(dice1, dice2) {
+	this.drawOne = function(ypos, dice1) {
+		// draw this single dice
+		this.drawSingleDice(this.global_xpos + 5 + 110, ypos, dice1);
+	};
+
+	this.drawTwo = function(ypos, dice1, dice2) {
 		var xpos = this.global_xpos + 5 + 61;
-		var sprite1 = game.add.sprite(xpos, 128, getDiceName(value));
-		sprite1.width = 84;
-		sprite1.height = 84;
+		this.drawSingleDice(xpos, ypos, dice1);
 		xpos += 84 + 14;
-		var sprite2 = game.add.sprite(xpos, 128, getDiceName(value));
-		sprite2.width = 84;
-		sprite2.height = 84;
-		this.dice.push(sprite1);
-		this.dice.push(sprite2);
+		this.drawSingleDice(xpos, ypos, dice2);
+	};
+
+	this.drawThree = function(ypos, dice1, dice2, dice3) {
+		var xpos = this.global_xpos + 18;
+		this.drawSingleDice(xpos, ypos, dice1);
+		xpos += 84 + 13;
+		this.drawSingleDice(xpos, ypos, dice2);
+		xpos += 84 + 13;
+		this.drawSingleDice(xpos, ypos, dice3);
 	};
 
 	this.draw = function(player) {
@@ -95,9 +101,10 @@ function PlayerDisplay(location, color) {
 		}
 		// redraw dice
 		this.destroyDiceSprites();
-		var xpos = 0;
-
-		this.drawOne(player.dice[0]);
+		var ypos = 66;
+		this.drawThree(ypos, player.dice[0], player.dice[1], player.dice[2]);
+		ypos += 84 + 13;
+		this.drawTwo(ypos, player.dice[3], player.dice[4]);
 
 		//for(var i of player.dice) {
 		//	game.add.sprite(xpos, 0, getDiceName(i));
@@ -143,9 +150,6 @@ function Game() {
 		this.initFullScreen();
 		this.game.stage.backgroundColor = consts.BACKGROUNDCOLOR;
 		this.addKeys();
-
-		console.log(this.model);
-
 		this.drawPlayers();
 	};
 	
