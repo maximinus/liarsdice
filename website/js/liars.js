@@ -40,17 +40,70 @@ Rect.prototype.inside = function(x, y) {
 	return(true);
 };
 
-function LiarsEngine(total_players) {
+function getDiceName(index) {
+	// always return some image
+	if((index < 1) || (index > 6)) {
+		return('1_image'); }
+	return(index.toString() + '_image');
+};
+
+function PlayerDisplay(location, color) {
+	var WIDTH = 320;
+	var HEIGHT = 320;
+
+	this.createInitialSprite = function() {
+		// create the border etc..
+		var image = game.add.bitmapData(WIDTH, HEIGHT);
+		image.ctx.beginPath();
+		image.ctx.rect(0, 0, WIDTH, HEIGHT);
+		image.ctx.fillStyle = this.color;
+		image.ctx.fill();
+		this.background = game.add.sprite(-(WIDTH * 2), 0, image);
+	};
+
+	this.destroyDiceSprites = function() {
+		for(var i of this.dice) {
+			i.kill(); }
+		this.dice = [];
+	};
+
+	this.draw = function(player) {
+		console.log(player);
+
+		if(this.sprite == null) {
+			this.createInitialSprite();
+		}
+		// redraw dice
+		this.destroyDiceSprites();
+		var xpos = 0;
+		for(var i of player.dice) {
+			game.add.sprite(xpos, 0, getDiceName(i));
+			xpos += 128;
+		}
+		this.background.x = 0;
+		this.background.y = 0;
+	};
+
+	this.color = color;
+	this.background = null;
+	this.dice = [];
+	this.location = location;
+};
+
+function LiarModel(total_players) {
 	this.rollAllDice = function() {
 		for(var i of this.players) {
 			i.rollDice(); }
 	};
 
-	this.players = [];
-	for(var i=0; i<total_players; i++) {
-		this.players.push(new Player());
-	}
-	this.rollAllDice();
+	this.init = function() {
+		this.players = [];
+		for(var i=0; i<total_players; i++) {
+			this.players.push(new Player()); }
+		this.rollAllDice();
+	};
+
+	this.init();
 };
 
 function Game() {
@@ -66,6 +119,10 @@ function Game() {
 		this.initFullScreen();
 		this.game.stage.backgroundColor = consts.BACKGROUNDCOLOR;
 		this.addKeys();
+
+		console.log(this.model);
+
+		this.drawPlayers();
 	};
 	
 	this.addKeys = function() {
@@ -86,7 +143,12 @@ function Game() {
 		// called every frame. delta = time since last frame
 	};
 
-	this.liars_engine = new LiarsEngine(consts.STARTING_PLAYERS);
+	this.drawPlayers = function() {
+		this.player_display.draw(this.model.players[0]);
+	};
+
+	this.model = new LiarModel(consts.STARTING_PLAYERS);
+	this.player_display = new PlayerDisplay(0, '#ff0000');
 };
 
 var game = new Phaser.Game(consts.WIDTH, consts.HEIGHT, Phaser.CANVAS, "Liar;s Dice");
