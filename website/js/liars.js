@@ -7,11 +7,14 @@ var consts = {
 	'GAME_SIZE': 640,
 	'BACKGROUNDCOLOR': '#ffffff',
 	'STARTING_PLAYERS': 4,
+	'HUMAN': true,
+	'AI': false,
 };
 
-function Player() {
+function Player(human) {
 	// start with 4 dice
 	this.dice = [1,1,1,1,1];
+	this.human = human;
 };
 
 Player.prototype.rollDice = function() {
@@ -22,6 +25,36 @@ Player.prototype.rollDice = function() {
 	}
 	new_dice.sort();
 	this.dice = new_dice;
+};
+
+Player.prototype.isHuman = function() {
+	return(this.human == consts.HUMAN);
+};
+
+function LiarModel(total_players) {
+	this.rollAllDice = function() {
+		for(var i of this.players) {
+			i.rollDice(); }
+	};
+
+	this.init = function() {
+		this.players = [];
+		for(var i=0; i<total_players; i++) {
+			this.players.push(new Player()); }
+		this.rollAllDice();
+	};
+
+	this.nextMove = function() {
+		// move on to the next player
+		this.current_player += 1;
+		// correct for overflow
+		if(this.current_player >= this.players.length) {
+			this.current_player = 0; }
+		
+	};
+
+	this.current_player = 0;
+	this.init();
 };
 
 function Rect(x, y, w, h) {	
@@ -49,21 +82,27 @@ function getDiceName(index) {
 
 function PlayerDisplay(location, color) {
 	var WIDTH = 314;
-	var HEIGHT = 314;
+	var HEIGHT = 217;
 
 	this.createInitialSprite = function() {
 		// create the border etc..
+		if(this.background != null) {
+			this.background.destroy();
+		}
 		var image = game.add.bitmapData(WIDTH, HEIGHT);
 		image.ctx.beginPath();
-		image.ctx.rect(0, 0, WIDTH, HEIGHT);
+		image.ctx.rect(5, 5, 304, 207);
 		image.ctx.fillStyle = this.color;
 		image.ctx.fill();
-		this.background = game.add.sprite(-(WIDTH * 2), 0, image);
+		image.draw('player_background');
+		image.update();
+		//this.background = game.add.sprite(-(WIDTH * 2), 0, image);
+		this.background = game.add.sprite(this.global_xpos, this.global_ypos, image);
 	};
 
 	this.destroyDiceSprites = function() {
 		for(var i of this.dice) {
-			i.kill(); }
+			i.destroy(); }
 		this.dice = [];
 	};
 
@@ -96,54 +135,35 @@ function PlayerDisplay(location, color) {
 	};
 
 	this.draw = function(player) {
-		if(this.sprite == null) {
+		if(this.background == null) {
 			this.createInitialSprite();
 		}
 		// redraw dice
 		this.destroyDiceSprites();
-		var ypos = 66;
+		var ypos = this.global_ypos + 5 + 13;
 		this.drawThree(ypos, player.dice[0], player.dice[1], player.dice[2]);
 		ypos += 84 + 13;
 		this.drawTwo(ypos, player.dice[3], player.dice[4]);
-
-		//for(var i of player.dice) {
-		//	game.add.sprite(xpos, 0, getDiceName(i));
-		//	xpos += 128;
-		//}
-
-		this.background.x = this.global_xpos;
-		this.background.y = 0;
 	};
 
 	this.global_xpos = location * 320;
+	this.global_ypos = 100;
 	this.color = color;
 	this.background = null;
 	this.dice = [];
 };
 
-function LiarModel(total_players) {
-	this.rollAllDice = function() {
-		for(var i of this.players) {
-			i.rollDice(); }
-	};
-
-	this.init = function() {
-		this.players = [];
-		for(var i=0; i<total_players; i++) {
-			this.players.push(new Player()); }
-		this.rollAllDice();
-	};
-
-	this.init();
-};
-
 function Game() {
 	this.preload = function() {
+		// load the dice
 		for(var i=1; i<7; i++) {
 			var filename = 'gfx/' + i.toString() + '_dots.png';
 			var index = i.toString() + '_image';
 			game.load.image(index, filename);
 		}
+		// and other images
+		game.load.image('player_background', 'gfx/player_border.png');
+		game.load.image('player_highlight', 'gfx/highlight.png');
 	};
 
 	this.create = function() {
@@ -180,7 +200,7 @@ function Game() {
 
 	this.model = new LiarModel(consts.STARTING_PLAYERS);
 	this.player_display = [];
-	var colors = ['#ff0000', '#00ff00', '#0000ff', '#aaaa00'];
+	var colors = ['#ee7777', '#77ee77', '#7777ee', '#bb9977'];
 	for(var i = 0; i < colors.length; i++) {
 		this.player_display.push(new PlayerDisplay(i, colors[i]));
 	}
