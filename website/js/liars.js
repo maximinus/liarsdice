@@ -9,6 +9,7 @@ var consts = {
 	'STARTING_PLAYERS': 4,
 	'HUMAN': true,
 	'AI': false,
+	'CALL': 0,
 };
 
 function Player(human) {
@@ -44,14 +45,22 @@ function LiarModel(total_players) {
 		this.rollAllDice();
 	};
 
-	this.nextMove = function() {
+	this.nextPlayer = function() {
 		// move on to the next player
 		this.current_player += 1;
 		// correct for overflow
 		if(this.current_player >= this.players.length) {
 			this.current_player = 0; }
-		
+		return(this.current_player);
 	};
+
+	this.currentPlayerIsHuman = function() {
+		return(this.players[this.current_player].isHuman());
+	};
+
+	this.getNextBid = function() {
+		// if player is human it's an error, and return a 
+	}
 
 	this.current_player = 0;
 	this.init();
@@ -78,6 +87,37 @@ function getDiceName(index) {
 	if((index < 1) || (index > 6)) {
 		return('1_image'); }
 	return(index.toString() + '_image');
+};
+
+function Bid(total, value) {
+	// i.e. 4 SIX'S would be total = 4, value = 6
+	this.total = total;
+	this.value = value;
+};
+
+Bid.prototype.getNextSmallest = function() {
+	if(this.value < 6) {
+		return(new Bid(this.total, this.value + 1));
+	}
+	return(new Bid(this.total + 1, this.value))
+};
+
+Bid.prototype.getPossibleSameTotal = function() {
+	// return all bids with same total but increasing values
+	if(this.value >= 6) {
+		return([]); }
+	var new_bids = [];
+	for(var i = value; i < 7; i++) {
+		new_bids.push(new Bid(total, i)); }
+	return(bids);
+};
+
+Bid.prototype.getPossibleIncTotal = function() {
+	var total = this.total + 1;
+	new_bids = [];
+	for(var i = 1; i < 7; i++) {
+		new_bids.push(new Bid(total, i)); }
+	return(bids);
 };
 
 function PlayerDisplay(location, color) {
